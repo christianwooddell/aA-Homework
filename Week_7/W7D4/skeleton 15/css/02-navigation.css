@@ -1,7 +1,9 @@
 /* PHASE 2: Navigation */
 
 .header-logo {
-
+    float: left;
+    border-right: 1px solid #ccc;
+    font-weight: 700;
 }
 
 .header-logo:hover {
