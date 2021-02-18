@@ -1,12 +1,17 @@
 // titleize 
 function titleize(names, callback) {
-    let titleized = names.map(name => `Mx. ${name} Jingleheimer Schmidt`);
+    let titleized = names.map( function(ele) {
+        return `Mx. ${ele} Jingleheimer Schmidt`
+    })
     callback(titleized);
 };
 
-titleize(["Mary", "Brian", "Leo"], (names) => {
-    names.forEach(name => console.log(name));
-});
+function printCallback(titleized){
+    titleized.forEach(function(ele) {
+        console.log(ele);
+    })
+}
+titleize(["Mary", "Brian", "Leo"], printCallback);
 
 // elephant 
 
@@ -21,7 +26,7 @@ Elephant.prototype.trumpet = function() {
 };
 
 Elephant.prototype.grow = function() {
-    this.height = this.height + 12;
+    this.height += 12;
 };
 
 Elephant.prototype.addTrick = function (trick) {
