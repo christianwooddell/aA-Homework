@@ -1211,6 +1211,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _store_store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./store/store */ "./frontend/store/store.js");
 /* harmony import */ var _components_root__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/root */ "./frontend/components/root.jsx");
+function _readOnlyError(name) { throw new TypeError("\"" + name + "\" is read-only"); }
+
 
 
 
@@ -1218,7 +1220,7 @@ __webpack_require__.r(__webpack_exports__);
 document.addEventListener('DOMContentLoaded', function () {
   var preloadedState = localStorage.state ? JSON.parse(localStorage.state) : {};
   var store = Object(_store_store__WEBPACK_IMPORTED_MODULE_2__["default"])(preloadedState);
-  store.dispatch = addLoggingToDispatch(store);
+  store = (_readOnlyError("store"), applyMiddlewares(store, addLoggingToDispatch));
   var root = document.getElementById('content');
   react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_components_root__WEBPACK_IMPORTED_MODULE_3__["default"], {
     store: store
@@ -1226,13 +1228,29 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 var addLoggingToDispatch = function addLoggingToDispatch(store) {
-  var OriginalDispatch = store.dispatch;
-  return function (action) {
-    console.log(store.getState());
-    console.log(action);
-    OriginalDispatch(action);
-    console.log(store.getState());
+  return function (next) {
+    return function (action) {
+      console.log(store.getState());
+      console.log(action);
+      next(action);
+      console.log(store.getState());
+    };
   };
+};
+
+var applyMiddlewares = function applyMiddlewares(store) {
+  var dispatch = store.dispatch;
+
+  for (var _len = arguments.length, middlewares = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    middlewares[_key - 1] = arguments[_key];
+  }
+
+  middlewares.forEach(function (middleware) {
+    dispatch = middleware(store)(dispatch);
+  });
+  return Object.assign({}, store, {
+    dispatch: dispatch
+  });
 };
 
 /***/ }),
